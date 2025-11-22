@@ -23,8 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Large media files - exclude from git (use external hosting or Git LFS)
-public/Music/*.mp3
-*.mp3
-!public/audio/kitten-meow.mp3
+# Large media files are now handled by Git LFS
+# (No need to exclude - Git LFS tracks them)
 
