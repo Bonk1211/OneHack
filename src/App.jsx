@@ -317,7 +317,7 @@ function App() {
       {/* Background Music */}
       <audio
         ref={bgmRef}
-        src="/Music/Study with Me in Minecraft  Rainy Cottage  25_5 Pomodoro Timer [2hr] [4K] - Ambient Horizons.mp3"
+        src="/Music/♪ Minecraft - Volume Alpha ( 30 Minute HD Playlist ) ♪ - eNinja.mp3"
         loop
         preload="auto"
       />
