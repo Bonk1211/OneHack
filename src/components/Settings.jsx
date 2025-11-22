@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getSettings, updateSetting } from '../utils/settings'
+import { getSettings, updateSetting, DEVELOPER_MODE_PASSWORD } from '../utils/settings'
 import TransactionHistory from './TransactionHistory'
 import TreasuryStatus from './TreasuryStatus'
 import '../styles/Settings.css'
@@ -7,6 +7,9 @@ import '../styles/Settings.css'
 function Settings({ onClose }) {
   const [settings, setSettings] = useState(getSettings())
   const [showTransactionHistory, setShowTransactionHistory] = useState(false)
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   useEffect(() => {
     // Apply theme on mount and when theme changes
@@ -42,8 +45,43 @@ function Settings({ onClose }) {
   }
 
   const handleDeveloperModeToggle = () => {
-    const newValue = !settings.developerMode
-    handleSettingChange('developerMode', newValue)
+    // If trying to enable developer mode, always require password prompt
+    if (!settings.developerMode) {
+      // Show password prompt - require password every time it's enabled
+      setShowPasswordPrompt(true)
+      setPasswordInput('')
+      setPasswordError('')
+      return
+    }
+    
+    // If disabling developer mode, reset authentication and disable fast timer mode
+    handleSettingChange('fastTimerMode', false)
+    handleSettingChange('developerModeAuthenticated', false) // Reset authentication when turning off
+    handleSettingChange('developerMode', false)
+  }
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault()
+    
+    if (passwordInput === DEVELOPER_MODE_PASSWORD) {
+      // Password correct - enable developer mode
+      updateSetting('developerModeAuthenticated', true)
+      updateSetting('developerMode', true)
+      setSettings(getSettings())
+      setShowPasswordPrompt(false)
+      setPasswordInput('')
+      setPasswordError('')
+    } else {
+      // Password incorrect
+      setPasswordError('Incorrect password')
+      setPasswordInput('')
+    }
+  }
+
+  const handlePasswordCancel = () => {
+    setShowPasswordPrompt(false)
+    setPasswordInput('')
+    setPasswordError('')
   }
 
 
@@ -182,7 +220,7 @@ function Settings({ onClose }) {
               </label>
             </div>
             
-            {settings.developerMode && (
+            {settings.developerMode && settings.developerModeAuthenticated && (
               <div className="dev-mode-panel">
                 {/* Fast Timer Mode Toggle */}
                 <div className="dev-option">
@@ -201,6 +239,14 @@ function Settings({ onClose }) {
                 </div>
               </div>
             )}
+            
+            {settings.developerMode && !settings.developerModeAuthenticated && (
+              <div className="dev-mode-panel">
+                <div className="dev-info" style={{ color: '#ff6b6b' }}>
+                  ⚠️ Developer mode requires password authentication
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -208,6 +254,44 @@ function Settings({ onClose }) {
       {/* Transaction History Modal */}
       {showTransactionHistory && (
         <TransactionHistory onClose={() => setShowTransactionHistory(false)} />
+      )}
+
+      {/* Developer Mode Password Prompt */}
+      {showPasswordPrompt && (
+        <div className="password-prompt-overlay" onClick={handlePasswordCancel}>
+          <div className="password-prompt-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="password-prompt-header">
+              <h3 className="password-prompt-title">🔒 Developer Mode</h3>
+              <button className="password-prompt-close" onClick={handlePasswordCancel}>✕</button>
+            </div>
+            <form className="password-prompt-content" onSubmit={handlePasswordSubmit}>
+              <label className="password-prompt-label">Enter Password:</label>
+              <input
+                type="password"
+                className="password-prompt-input"
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value)
+                  setPasswordError('')
+                }}
+                placeholder="Password"
+                autoFocus
+                autoComplete="off"
+              />
+              {passwordError && (
+                <div className="password-prompt-error">{passwordError}</div>
+              )}
+              <div className="password-prompt-actions">
+                <button type="button" className="password-prompt-button cancel" onClick={handlePasswordCancel}>
+                  Cancel
+                </button>
+                <button type="submit" className="password-prompt-button submit">
+                  Unlock
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   )

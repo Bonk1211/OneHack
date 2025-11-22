@@ -177,67 +177,7 @@ function App() {
   return (
     <div className="app">
       <div className="app-container">
-        <div className="app-header">
-          <h1 className="app-title">Pixel Cat Pomodoro</h1>
-          <div className="header-controls">
-            <div className="wallet-connection-wrapper">
-              <ConnectButton />
-              {autoConnectionStatus === 'idle' && (
-                <div className="auto-connect-status idle" title="Auto-connecting wallet...">
-                  <span className="status-icon">⏳</span>
-                  <span className="status-text">Connecting...</span>
-                </div>
-              )}
-              {autoConnectionStatus === 'attempted' && !wallet?.isConnected && wallets.some(w => w.installed) && (
-                <div className="auto-connect-status prompt" title="Click ConnectButton to connect your wallet">
-                  <span className="status-icon">👆</span>
-                  <span className="status-text">Click to Connect</span>
-                </div>
-              )}
-              {autoConnectionStatus === 'attempted' && wallet?.isConnected && (
-                <div className="auto-connect-status attempted" title="Wallet connected">
-                  <span className="status-icon">✓</span>
-                </div>
-              )}
-            </div>
-            <CoinDisplay />
-            <TreasuryStatus compact={true} showDetails={false} />
-            <button 
-              className="bgm-toggle-button"
-              onClick={handleBgmToggle}
-              title={bgmMuted ? "Unmute background music" : "Mute background music"}
-            >
-              <img 
-                src={bgmMuted 
-                  ? "/images/pngtree-pixel-art-wooden-mute-sound-button-icon-graphic-design-vector-png-image_16294889.png"
-                  : "/images/pngtree-pixel-art-wooden-turn-on-sound-button-icon-graphic-design-vector-png-image_16294875.png"
-                }
-                alt={bgmMuted ? "Unmute" : "Mute"}
-                className="bgm-icon"
-              />
-            </button>
-            <button 
-              className="shop-button"
-              onClick={() => setShowShop(true)}
-            >
-              🛒 Shop
-            </button>
-            <button 
-              className="gallery-button"
-              onClick={() => setShowGallery(true)}
-            >
-              🐱 Collection
-            </button>
-            <button 
-              className="settings-button"
-              onClick={() => setShowSettings(true)}
-            >
-              ⚙️ Settings
-            </button>
-          </div>
-        </div>
-        
-        <div className="page-navigation">
+        <nav className="main-navigation">
           <button
             className={`nav-button ${page === 'timer' ? 'active' : ''}`}
             onClick={() => setPage('timer')}
@@ -250,6 +190,70 @@ function App() {
           >
             🐱 My Cat
           </button>
+        </nav>
+        
+        <div className="app-header">
+          <h1 className="app-title">Pixel Cat Pomodoro</h1>
+          <div className="header-controls">
+            <div className="header-controls-left">
+              <div className="wallet-connection-wrapper">
+                <ConnectButton />
+                {autoConnectionStatus === 'idle' && (
+                  <div className="auto-connect-status idle" title="Auto-connecting wallet...">
+                    <span className="status-icon">⏳</span>
+                    <span className="status-text">Connecting...</span>
+                  </div>
+                )}
+                {autoConnectionStatus === 'attempted' && !wallet?.isConnected && wallets.some(w => w.installed) && (
+                  <div className="auto-connect-status prompt" title="Click ConnectButton to connect your wallet">
+                    <span className="status-icon">👆</span>
+                    <span className="status-text">Click to Connect</span>
+                  </div>
+                )}
+                {autoConnectionStatus === 'attempted' && wallet?.isConnected && (
+                  <div className="auto-connect-status attempted" title="Wallet connected">
+                    <span className="status-icon">✓</span>
+                  </div>
+                )}
+              </div>
+              <CoinDisplay />
+              <TreasuryStatus compact={true} showDetails={false} />
+              <button 
+                className="bgm-toggle-button"
+                onClick={handleBgmToggle}
+                title={bgmMuted ? "Unmute background music" : "Mute background music"}
+              >
+                <img 
+                  src={bgmMuted 
+                    ? "/images/pngtree-pixel-art-wooden-mute-sound-button-icon-graphic-design-vector-png-image_16294889.png"
+                    : "/images/pngtree-pixel-art-wooden-turn-on-sound-button-icon-graphic-design-vector-png-image_16294875.png"
+                  }
+                  alt={bgmMuted ? "Unmute" : "Mute"}
+                  className="bgm-icon"
+                />
+              </button>
+            </div>
+            <div className="header-controls-center">
+              <button 
+                className="shop-button"
+                onClick={() => setShowShop(true)}
+              >
+                🛒 Shop
+              </button>
+              <button 
+                className="gallery-button"
+                onClick={() => setShowGallery(true)}
+              >
+                🐱 Collection
+              </button>
+              <button 
+                className="settings-button"
+                onClick={() => setShowSettings(true)}
+              >
+                ⚙️ Settings
+              </button>
+            </div>
+          </div>
         </div>
 
         {page === 'timer' && (

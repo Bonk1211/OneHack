@@ -9,8 +9,12 @@ const DEFAULT_SETTINGS = {
   graphics: 'high', // 'low', 'medium', 'high'
   theme: 'dark', // 'dark', 'light'
   developerMode: false,
-  fastTimerMode: false // 200x speed for testing
+  developerModeAuthenticated: false, // Password has been verified
+  fastTimerMode: false // 200x speed for testing (only works if developerModeAuthenticated is true)
 }
+
+// Developer mode password (change this to your desired password)
+export const DEVELOPER_MODE_PASSWORD = 'devmode'
 
 export const getSettings = () => {
   try {

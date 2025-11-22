@@ -4,6 +4,28 @@
 
 ---
 
+## 🔐 Developer Mode
+
+### Password Protected Feature
+
+Developer Mode includes a **Fast Timer Mode** (200x speed) for testing purposes. The timer runs at 200x speed (25 minutes → 7.5 seconds) to help developers and testers quickly verify functionality.
+
+**Developer Mode Password**: `devmode`
+
+### How to Access Developer Mode
+
+1. Click the **⚙️ Settings** button
+2. Toggle **Developer Mode** ON
+3. Enter the password: `devmode`
+4. Once unlocked, you can enable **Fast Timer Mode (200x)** option
+
+**Note**: 
+- Password is required **every time** you enable Developer Mode (after turning it off)
+- Fast Timer Mode only works when Developer Mode is authenticated
+- This feature is for testing/development purposes only
+
+---
+
 ## 🎯 What Is This?
 
 A Pomodoro timer app that rewards you with **1 OCT token** for every 25-minute work session you complete. Built on OneChain blockchain with automatic reward distribution.

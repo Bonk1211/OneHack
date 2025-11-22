@@ -31,8 +31,10 @@ function Timer({ initialSeconds, onComplete, phase = null, autoStart = false, on
   useEffect(() => {
     if (isRunning && seconds > 0) {
       // Check if fast timer mode is enabled (200x speed)
+      // Only allow if developer mode is authenticated
       const settings = getSettings()
-      const interval = settings.fastTimerMode ? 1000 / 200 : 1000 // 5ms for fast mode, 1000ms for normal
+      const canUseFastMode = settings.fastTimerMode && settings.developerModeAuthenticated
+      const interval = canUseFastMode ? 1000 / 200 : 1000 // 5ms for fast mode, 1000ms for normal
       
       intervalRef.current = setInterval(() => {
         setSeconds((prev) => {
