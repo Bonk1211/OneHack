@@ -34,6 +34,7 @@ function App() {
   // Background music
   const bgmRef = useRef(null)
   const [bgmMuted, setBgmMuted] = useState(getSettings().bgmMuted || false)
+  const [bgmAvailable, setBgmAvailable] = useState(true) // Track if BGM file is available
 
   useEffect(() => {
     // Initialize game state
@@ -56,12 +57,14 @@ function App() {
       const handleError = (e) => {
         console.warn('Background music file not found or unsupported format. Audio disabled.')
         // Disable BGM if file can't be loaded
+        setBgmAvailable(false)
         setBgmMuted(true)
         updateSetting('bgmMuted', true)
       }
       
       // Try to load the audio source
       const handleCanPlay = () => {
+        setBgmAvailable(true)
         if (!settings.bgmMuted) {
           bgmRef.current.play().catch(err => {
             console.log('Background music autoplay prevented:', err)
@@ -70,10 +73,13 @@ function App() {
         }
       }
       
-      bgmRef.current.addEventListener('error', handleError)
-      bgmRef.current.addEventListener('canplay', handleCanPlay)
+      // Load background music with simple filename
+      const baseUrl = import.meta.env.BASE_URL || ''
+      const audioPath = `${baseUrl}Music/bgm.mp3`
       
-      // Load the audio source
+      bgmRef.current.src = audioPath
+      bgmRef.current.addEventListener('error', handleError, { once: true })
+      bgmRef.current.addEventListener('canplay', handleCanPlay, { once: true })
       bgmRef.current.load()
       
       return () => {
@@ -123,6 +129,11 @@ function App() {
   
   // Handle mute/unmute toggle
   const handleBgmToggle = () => {
+    if (!bgmAvailable) {
+      console.warn('Background music is not available')
+      return
+    }
+    
     const newMutedState = !bgmMuted
     setBgmMuted(newMutedState)
     updateSetting('bgmMuted', newMutedState)
@@ -353,12 +364,13 @@ function App() {
       )}
       
       {/* Background Music */}
-      <audio
-        ref={bgmRef}
-        src={`${import.meta.env.BASE_URL || ''}Music/${encodeURIComponent('♪ Minecraft - Volume Alpha ( 30 Minute HD Playlist ) ♪ - eNinja.mp3')}`}
-        loop
-        preload="auto"
-      />
+      {bgmAvailable && (
+        <audio
+          ref={bgmRef}
+          loop
+          preload="auto"
+        />
+      )}
     </div>
   )
 }
