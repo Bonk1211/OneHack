@@ -73,19 +73,46 @@ function App() {
         }
       }
       
-      // Load background music with simple filename
-      const baseUrl = import.meta.env.BASE_URL || ''
-      const audioPath = `${baseUrl}Music/bgm.mp3`
+      // Load background music - use simple absolute path (works on both localhost and Vercel)
+      // Vercel serves files from public/ folder at root, so /Music/bgm.mp3 should work
+      const audioPath = '/Music/bgm.mp3'
       
       bgmRef.current.src = audioPath
-      bgmRef.current.addEventListener('error', handleError, { once: true })
+      
+      // Add timeout to detect if file is taking too long to load
+      let loadTimeout = setTimeout(() => {
+        console.warn('BGM loading timeout - file may be large or network slow')
+        // Don't disable yet, just log - let it continue trying
+      }, 10000) // 10 second timeout
+      
+      // Success handler
+      const handleLoadSuccess = () => {
+        clearTimeout(loadTimeout)
+        console.log('✅ BGM loaded successfully from:', audioPath)
+        setBgmAvailable(true)
+      }
+      
+      // Error handler with retry
+      const handleLoadError = () => {
+        clearTimeout(loadTimeout)
+        console.warn('⚠️ Failed to load BGM from:', audioPath)
+        console.warn('This might be a deployment issue. BGM will be disabled.')
+        handleError()
+      }
+      
+      bgmRef.current.addEventListener('loadeddata', handleLoadSuccess, { once: true })
       bgmRef.current.addEventListener('canplay', handleCanPlay, { once: true })
+      bgmRef.current.addEventListener('error', handleLoadError, { once: true })
+      
+      // Start loading
       bgmRef.current.load()
       
       return () => {
+        clearTimeout(loadTimeout)
         if (bgmRef.current) {
-          bgmRef.current.removeEventListener('error', handleError)
+          bgmRef.current.removeEventListener('error', handleLoadError)
           bgmRef.current.removeEventListener('canplay', handleCanPlay)
+          bgmRef.current.removeEventListener('loadeddata', handleLoadSuccess)
         }
       }
     }
