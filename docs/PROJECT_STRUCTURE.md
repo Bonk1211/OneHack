@@ -8,7 +8,7 @@ OneHack/
 ├── 📄 package.json                  # Node.js dependencies
 ├── 📄 vite.config.js               # Vite build configuration
 ├── 📄 .gitignore                   # Git ignore rules
-├── 📄 .gitattributes               # Git LFS configuration
+├── 📄 .gitattributes               # Git attributes configuration
 │
 ├── 📁 docs/                        # Documentation
 │   ├── REWARD_SYSTEM_ARCHITECTURE.md
@@ -68,7 +68,7 @@ OneHack/
 │   ├── 📁 audio/                  # Sound effects
 │   │   └── kitten-meow.mp3
 │   │
-│   ├── 📁 Music/                  # Background music (Git LFS)
+│   ├── 📁 Music/                  # Background music
 │   │   └── ♪ Minecraft - Volume Alpha...mp3
 │   │
 │   ├── 📁 UI/                     # UI assets
@@ -106,7 +106,7 @@ OneHack/
 - **Animation/**: Cat sprite animations
 - **images/**: Game images (items, UI elements)
 - **audio/**: Sound effects
-- **Music/**: Background music (tracked with Git LFS)
+- **Music/**: Background music
 - **UI/**: UI component assets
 
 ### `packages/` - Smart Contracts
@@ -134,7 +134,7 @@ OneHack/
 
 - `node_modules/` - Dependencies
 - `dist/` - Build output (regenerated)
-- Large MP3 files (tracked with Git LFS)
+- MP3 files (tracked normally in Git)
 
 ## 📦 Build Output
 
