@@ -51,11 +51,36 @@ function App() {
     if (bgmRef.current) {
       bgmRef.current.volume = settings.bgm / 100
       bgmRef.current.loop = true
-      if (!settings.bgmMuted) {
-        bgmRef.current.play().catch(err => {
-          console.log('Background music autoplay prevented:', err)
-          // User interaction required - will play when they click mute/unmute
-        })
+      
+      // Handle audio load errors
+      const handleError = (e) => {
+        console.warn('Background music file not found or unsupported format. Audio disabled.')
+        // Disable BGM if file can't be loaded
+        setBgmMuted(true)
+        updateSetting('bgmMuted', true)
+      }
+      
+      // Try to load the audio source
+      const handleCanPlay = () => {
+        if (!settings.bgmMuted) {
+          bgmRef.current.play().catch(err => {
+            console.log('Background music autoplay prevented:', err)
+            // User interaction required - will play when they click mute/unmute
+          })
+        }
+      }
+      
+      bgmRef.current.addEventListener('error', handleError)
+      bgmRef.current.addEventListener('canplay', handleCanPlay)
+      
+      // Load the audio source
+      bgmRef.current.load()
+      
+      return () => {
+        if (bgmRef.current) {
+          bgmRef.current.removeEventListener('error', handleError)
+          bgmRef.current.removeEventListener('canplay', handleCanPlay)
+        }
       }
     }
     
@@ -106,9 +131,18 @@ function App() {
       if (newMutedState) {
         bgmRef.current.pause()
       } else {
-        bgmRef.current.play().catch(err => {
-          console.log('Error playing background music:', err)
-        })
+        // Check if audio source is valid before playing
+        if (bgmRef.current.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+          bgmRef.current.play().catch(err => {
+            console.log('Error playing background music:', err)
+          })
+        } else {
+          // Try to load the source if not loaded yet
+          bgmRef.current.load()
+          bgmRef.current.play().catch(err => {
+            console.log('Error playing background music:', err)
+          })
+        }
       }
     }
   }
@@ -321,7 +355,7 @@ function App() {
       {/* Background Music */}
       <audio
         ref={bgmRef}
-        src="/Music/♪ Minecraft - Volume Alpha ( 30 Minute HD Playlist ) ♪ - eNinja.mp3"
+        src={`${import.meta.env.BASE_URL || ''}Music/${encodeURIComponent('♪ Minecraft - Volume Alpha ( 30 Minute HD Playlist ) ♪ - eNinja.mp3')}`}
         loop
         preload="auto"
       />
