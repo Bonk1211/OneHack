@@ -1,7 +1,7 @@
 # 🐱 Pixel Cat Pomodoro Timer - User Guide
 
 **Earn OCT tokens while staying focused!** Complete Pomodoro work sessions and receive blockchain rewards automatically.
-
+**IMPORTANT : AT LEAST 1 OCT COINS for testing functionality**
 ---
 
 ## 🔐 Developer Mode
